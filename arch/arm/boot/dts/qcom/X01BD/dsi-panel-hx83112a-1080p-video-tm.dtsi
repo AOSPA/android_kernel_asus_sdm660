@@ -106,5 +106,6 @@
 		qcom,mdss-dsi-panel-status-valid-params = <3>;
 		qcom,mdss-dsi-panel-status-value = <0x80 0x73 0x06>;
 		qcom,mdss-dsi-panel-max-error-count = <3>;
+		qcom,ulps-enabled;
 	};
 };
