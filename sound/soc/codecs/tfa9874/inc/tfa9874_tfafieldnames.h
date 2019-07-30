@@ -360,7 +360,7 @@ typedef enum nxpTfa9874BfEnumList {
    { 0xffff,"Unknown bitfield enum" }   /* not found */\
 };
 
-#ifdef CONFIG_MACH_ASUS_X00TD
+#ifdef CONFIG_MACH_ASUS_SDM660
 #define TFA9874_BITNAMETABLE static tfaBfName_t Tfa9874BitNames[]= {\
    { 0x0, "powerdown"},    /* Powerdown selection                               , */\
    { 0x10, "reset"},    /* I2C Reset - Auto clear                            , */\
@@ -807,7 +807,7 @@ typedef enum nxpTfa9874BfEnumList {
    { 0xff87, "spare_mtp7_15_08"},    /* SPARE                                             , */\
    { 0xffff,"Unknown bitfield enum" }    /* not found */\
 };
-#endif /* CONFIG_MACH_ASUS_X00TD */
+#endif /* CONFIG_MACH_ASUS_SDM660 */
 
 enum tfa9874_irq {
 	tfa9874_irq_stvdds = 0,
