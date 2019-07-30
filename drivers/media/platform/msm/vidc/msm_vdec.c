@@ -1483,6 +1483,13 @@ static int msm_vdec_queue_setup(struct vb2_queue *q,
 				*num_buffers > MAX_NUM_OUTPUT_BUFFERS)
 			*num_buffers = MIN_NUM_OUTPUT_BUFFERS;
 
+#ifdef CONFIG_MACH_ASUS_X01BD
+		if (inst->fmts[OUTPUT_PORT].fourcc ==
+				V4L2_PIX_FMT_HEVC &&
+				*num_buffers < MIN_NUM_OUTPUT_BUFFERS_HEVC)
+			*num_buffers = MIN_NUM_OUTPUT_BUFFERS_HEVC;
+#endif
+
 		if (inst->fmts[OUTPUT_PORT].fourcc ==
 				V4L2_PIX_FMT_HEVC &&
 				*num_buffers < MIN_NUM_OUTPUT_BUFFERS_HEVC)
