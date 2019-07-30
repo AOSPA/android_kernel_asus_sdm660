@@ -24,7 +24,7 @@
 #include "mdss_dsi_cmd.h"
 #include "mdss_dsi_clk.h"
 
-#if defined(CONFIG_MACH_ASUS_X00TD) && defined(CONFIG_TOUCHSCREEN_NT36xxx)
+#if defined(CONFIG_MACH_ASUS_SDM660) && defined(CONFIG_TOUCHSCREEN_NT36xxx)
 extern int nvt_tp_check;
 #endif
 
@@ -455,6 +455,9 @@ struct mdss_dsi_ctrl_pdata {
 	int irq_cnt;
 	int disp_te_gpio;
 	int rst_gpio;
+#ifdef CONFIG_MACH_ASUS_X01BD
+	int tp_rst_gpio;
+#endif
 	int disp_en_gpio;
 	int bklt_en_gpio;
 	bool bklt_en_gpio_invert;
@@ -503,7 +506,7 @@ struct mdss_dsi_ctrl_pdata {
 	struct dsi_panel_cmds off_cmds;
 	struct dsi_panel_cmds lp_on_cmds;
 	struct dsi_panel_cmds lp_off_cmds;
-#ifdef CONFIG_MACH_ASUS_X00TD
+#ifdef CONFIG_MACH_ASUS_SDM660
 	struct dsi_panel_cmds esd_recover_cmds;
 #endif
 	struct dsi_panel_cmds status_cmds;
