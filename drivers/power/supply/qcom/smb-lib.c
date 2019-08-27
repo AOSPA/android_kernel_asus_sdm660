@@ -1476,7 +1476,7 @@ int smblib_vconn_regulator_is_enabled(struct regulator_dev *rdev)
 #define MAX_RETRY		15
 #define MIN_DELAY_US		2000
 #define MAX_DELAY_US		9000
-static int otg_current[] = {250000, 500000, 1000000, 1500000, 2500000};
+static int otg_current[] = {250000, 500000, 1000000, 1500000};
 static int smblib_enable_otg_wa(struct smb_charger *chg)
 {
 	u8 stat;
@@ -2694,12 +2694,12 @@ int smblib_get_prop_die_health(struct smb_charger *chg,
 	return 0;
 }
 
-#define SDP_CURRENT_UA			2500000
-#define CDP_CURRENT_UA			2500000
+#define SDP_CURRENT_UA			500000
+#define CDP_CURRENT_UA			1500000
 #ifdef CONFIG_MACH_ASUS_SDM660
-#define DCP_CURRENT_UA			2500000
+#define DCP_CURRENT_UA			500000
 #else
-#define DCP_CURRENT_UA			3500000
+#define DCP_CURRENT_UA			1500000
 #endif
 #define HVDCP_CURRENT_UA		3000000
 #define TYPEC_DEFAULT_CURRENT_UA	900000
@@ -3780,7 +3780,7 @@ void jeita_rule(void)
 	case JEITA_STATE_LESS_THAN_0:
 		charging_enable = EN_BAT_CHG_EN_COMMAND_FALSE;
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P357;
-		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_3000MA;
+		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_850MA;
 		break;
 	case JEITA_STATE_RANGE_0_to_100:
 		charging_enable = EN_BAT_CHG_EN_COMMAND_TRUE;
@@ -3789,7 +3789,7 @@ void jeita_rule(void)
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P350;
 
 		/* reg=1061 */
-		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_3000MA;
+		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_1400MA;
 
 		rc = SW_recharge(smbchg_dev);
 		if (rc < 0)
@@ -3804,7 +3804,7 @@ void jeita_rule(void)
 		FV_CFG_reg_value = SMBCHG_FLOAT_VOLTAGE_VALUE_4P350;
 
 		/* reg=1061 */
-		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_3000MA;
+		FCC_reg_value = SMBCHG_FAST_CHG_CURRENT_VALUE_2000MA;
 
 		rc = SW_recharge(smbchg_dev);
 		if (rc < 0)
@@ -3930,7 +3930,7 @@ void asus_chg_flow_work(struct work_struct *work)
 			pr_err("%s: Couldn't read fast_CURRENT_LIMIT_CFG_REG\n",
 				__func__);
 
-		set_icl = ICL_3000mA;
+		set_icl = ICL_500mA;
 
 		rc = smblib_masked_write(smbchg_dev,
 						USBIN_CURRENT_LIMIT_CFG_REG,
@@ -3947,7 +3947,7 @@ void asus_chg_flow_work(struct work_struct *work)
 		break;
 
 	case CDP_CHARGER_BIT:
-		set_icl = ICL_3000mA;
+		set_icl = ICL_1500mA;
 
 		/* reg=1370, bit7-bit0=USBIN_CURRENT_LIMIT */
 		rc = smblib_masked_write(smbchg_dev,
@@ -3973,7 +3973,7 @@ void asus_chg_flow_work(struct work_struct *work)
 
 	case OCP_CHARGER_BIT:
 		/* reg=1370 bit7-bit0 */
-		set_icl = ICL_3000mA;
+		set_icl = ICL_1000mA;
 
 		rc = smblib_masked_write(smbchg_dev,
 						USBIN_CURRENT_LIMIT_CFG_REG,
@@ -4000,7 +4000,7 @@ void asus_chg_flow_work(struct work_struct *work)
 				__func__);
 
 		/* reg=1370 bit7-bit0 */
-		set_icl = ICL_3000mA;
+		set_icl = ICL_1000mA;
 
 		rc = smblib_masked_write(smbchg_dev,
 						USBIN_CURRENT_LIMIT_CFG_REG,
@@ -4115,28 +4115,28 @@ void asus_adapter_adc_work(struct work_struct *work)
 	/* determine current-setting value for DCP type AC: */
 	switch (ASUS_ADAPTER_ID) {
 	case ASUS_750K:
-		usb_max_current = ICL_3000mA;
+		usb_max_current = ICL_2000mA;
 		break;
 
 	case ASUS_200K:
-		usb_max_current = ICL_3000mA;
+		usb_max_current = ICL_2000mA;
 		break;
 
 	case PB:
-		usb_max_current = ICL_3000mA;
+		usb_max_current = ICL_2000mA;
 		break;
 
 	case OTHERS:
 		if (BR_countrycode == COUNTRY_BR ||
 			BR_countrycode == COUNTRY_IN)
-			usb_max_current = ICL_3000mA;
-		else
 			usb_max_current = ICL_2000mA;
+		else
+			usb_max_current = ICL_1000mA;
 
 		break;
 
 	case ADC_NOT_READY:
-		usb_max_current = ICL_2000mA;
+		usb_max_current = ICL_1000mA;
 		break;
 	}
 
@@ -4825,7 +4825,7 @@ static void smblib_force_legacy_icl(struct smb_charger *chg, int pst)
 		 */
 		if (!is_client_vote_enabled(chg->usb_icl_votable,
 								USB_PSY_VOTER))
-			vote(chg->usb_icl_votable, USB_PSY_VOTER, true, 300000);
+			vote(chg->usb_icl_votable, USB_PSY_VOTER, true, 100000);
 		vote(chg->usb_icl_votable, LEGACY_UNKNOWN_VOTER, false, 0);
 		break;
 	case POWER_SUPPLY_TYPE_USB_CDP:
@@ -4859,7 +4859,7 @@ static void smblib_force_legacy_icl(struct smb_charger *chg, int pst)
 		 * limit ICL to 100mA, the USB driver will enumerate to check
 		 * if this is a SDP and appropriately set the current
 		 */
-		vote(chg->usb_icl_votable, LEGACY_UNKNOWN_VOTER, true, 300000);
+		vote(chg->usb_icl_votable, LEGACY_UNKNOWN_VOTER, true, 100000);
 		break;
 	case POWER_SUPPLY_TYPE_USB_HVDCP:
 	case POWER_SUPPLY_TYPE_USB_HVDCP_3:
