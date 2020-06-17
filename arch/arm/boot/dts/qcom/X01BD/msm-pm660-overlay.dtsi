@@ -100,5 +100,5 @@
 	qcom,wave-play-rate-us = <5263>;
 	qcom,play-mode = "buffer";
 	qcom,ilim-ma = <700>;
-	qcom,vmax-mv = <1900>;
+	qcom,vmax-mv = <2100>;
 };
