@@ -627,7 +627,11 @@ KBUILD_CFLAGS += $(call cc-option, -no-integrated-as)
 KBUILD_AFLAGS += $(call cc-option, -no-integrated-as)
 endif
 
-KBUILD_CFLAGS += --param=max-inline-insns-auto=1000
+KBUILD_CFLAGS += --param=max-inline-insns-auto=1000 \
+		 --param=inline-min-speedup=15 \
+		 --param=max-inline-insns-single=200 \
+		 --param=max-inline-insns-auto=30 \
+		 --param=early-inlining-insns=14
 
 # The arch Makefile can set ARCH_{CPP,A,C}FLAGS to override the default
 # values of the respective KBUILD_* variables
